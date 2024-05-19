@@ -1,0 +1,49 @@
+## Multithreading in Java 
+
+- We have 2 types of multitasking
+    - Process based Multi - tasking
+    - Thread based Multi  - tasking  (typing and spell check simultaneously)
+- A thread is an independent sequential path of execution within a program.
+- 3 important concepts
+    - Creating threads and providing the code that gets executed by a thread.
+    - Accessing common data and code through synchronization.
+    - Transitioning between thread states.
+- When a standalone application is run, a user thread is automatically created to execute the main() method of the application. This thread is called the main thread.
+- If no other user threads are spawned, the program terminates when the main() method finishes executing.
+- All other threads, called child threads, are spawned from the main thread.
+- The main() method can then finish, but the program will keep running until all user threads have completed.
+- When all the user threads execution is done, the program stops, it doesn’t matter weather daemon threads are still there that needs to be executed. Hence, user threads are given preference .
+- main() is also a user thread.
+- A daemon thread is at the mercy of the runtime system, it is stopped if there are no more user threads running, thus terminating the program.
+- Calling the *setDaemon(boolean)* method in the Thread class marks the status of the thread as either user or daemon, but this must be done before the thread is started.
+- There are two ways to create THREAD in JAVA
+    - Implementing the java.lang.Runnable interface
+    - Extending the java.lang.Thread class …. the thread class internally implements the Runnable Interface
+- Synchronization  - There are situation where it is desirable that only one thread at a time has access to a shared resource. ( We need to keep in mind that threads share the same memory space i.e they can share resources (objects) ).
+- We should not allow multiple threads to directly change the state of our variables. This will soon lead us into trouble. In order to tackle this situation, we can look at use locks/synchronizing the threads, this will ensure that at any given point in time, only 1 thread has access to the variable.
+    - While a thread is inside a synchronized method of an object, all other threads that wish to execute this synchronized method or any other sychronized method of the object will have to wait.
+    - This restriction does not apply to the thread that already has the lock and is executing a synchronized method of the object.
+    - Such a method can invoke other synchronized methods of the object without being blocked.
+    - The non-synchronized methods of the object can always be called at any time by any thread.
+- Synchronization of static methods in a class is independent from the synchronization of instance methods on  objects of the the class.  ( These are treated as two different locks, hence there is no problem in the execution of these. )
+- Thread Safety - It’s the term used to describe the design of classes that ensure that the state of their objects is always consistent, even when the objects are used concurrently by multiple threads. Eg - StringBuffer
+- Volatile Keyword -
+    - Imagine there are two threads, both of these threads will have their own, cache. Now, instead of loading the value from the main memory, the thread tries to fetch the value of a variable (which is actually a shared variable) from its local cache. If one of the threads, updates the value of this variable, it first updates the value in its local cache, then it takes some time to update the value in the main memory. Hence, for that period of time, the value in the main memory is wrong and also wrong for thread2 which has the old value stored in its cache. Hence, this is not good.
+    - To solve this problem, we use the keyword *volatile*  this ensures that the threads does not read the value of that variable from its local cache nor write down in the local cache. It directly reads/writes the value from the main memory.
+- If we call the *yield()*  over a thread, this goes like an ***advisory*** to the JVM , to put the thread (the one that called the method) from running state to back to ready-to-run state. Remember, this is an advisory and not a sure shot thing.
+- A thread which is sleeping can be awakened in only 2 cases -
+    - Time Elapsed
+    - Thread Interrupted ( Some other thread will call the interrupted method over the sleeping thread, that’s why we need to *catch* this error whenever we make a thread go into *sleeping* mode)
+- A thread in the waiting for notification state can be awakened by the occurrence of any one these three incidents :
+    - Another thread invokes the *notify()* method on the object of the waiting thread, and the waiting thread is selected as the thread to be awakened.
+    - The waiting thread times out.
+    - Another thread interrupts the waiting thread.
+- Thread States
+    - Non - Runnable States include
+        - Sleeping
+        - Blocked for Join Completion
+        - Blocked I/O Operation
+        - Waiting for notification —————————on receiving the notification, it gets blocked for lock acquisition
+- We can also define the priority for the thread, using Thread.MAX_PRIORITY and Thread.MIN_PRIORITY.
+    - The default priority is 5, max we can go upto 10 and min we can go up to 1.
+    - A thread inherits its priority for its parent thread.
